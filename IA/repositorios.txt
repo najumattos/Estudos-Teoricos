@@ -1,0 +1,4 @@
+ALURA https://github.com/najumattos/Gerador-post-IA.git
+
+Atividade da materia Desenvolvimento de Sistemas II utilizando a IDE Cursor para o desenvolvimento de um sistema de gerenciamento para uma barbearia
+https://github.com/lucasalexandrino/etec_navalha3ds.git

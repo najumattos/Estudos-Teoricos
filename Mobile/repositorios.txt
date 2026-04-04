@@ -1,0 +1,8 @@
+*Connecta Mobile: App para coordenadores adicionarem as anotações de consulta e visualizar alunos online. estudo de bibliotecas nativas do android com react expo
+https://github.com/najumattos/ConnectaMobile.git
+
+* Estudo inicial sobre uso de permissoes para utilizar camera, notificacoes, galeria do celular
+https://github.com/najumattos/FotoApp.git
+
+* Apps para gerencciar Atividades desenvolvidas durante o 2°DS
+https://github.com/najumattos/AtividadeReactNative.git

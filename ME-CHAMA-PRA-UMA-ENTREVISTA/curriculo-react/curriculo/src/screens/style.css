@@ -1,0 +1,58 @@
+#ProfileAna{
+    background-color: #1a1e26; /* Fundo escuro igual ao banner */
+    color: #f1f1f1;     
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 5%;
+}
+
+.formacao-estudos {
+  display: flex;
+  flex-wrap: wrap; /* Permite quebrar a linha se a tela for pequena */
+  gap: 20px;
+  width: 100%;
+}
+.formacao-estudos > section {
+  flex: 1 1 calc(50% - 10px); /* 50% menos metade do gap */
+  min-width: 300px; /* Se a tela for menor que isso, eles empilham */
+}
+
+.objective-card {
+  padding: 20px;
+  margin: 20px 5%; /* Alinhado com o padding do seu banner lateral */
+  
+  /* O detalhe da linha vertical azul na esquerda */
+  border-left: 4px solid #3c8dbc; 
+  
+  font-family: sans-serif;
+  line-height: 1.6; /* Melhora a leitura do parágrafo */
+}
+
+.title {
+  display: flex;
+  align-items: center; /* Alinha ícone e texto verticalmente no centro */
+  gap: 10px;           /* Espaço entre o ícone e o título */
+  margin-bottom: 15px; /* Espaço entre o cabeçalho e o texto */
+}
+
+.objective-title {
+  margin: 0;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.objective-text {
+  margin: 0;
+  font-size: 1rem;
+  color: #ccc; /* Um cinza claro para o corpo do texto ficar mais suave */
+  text-align: justify; /* Opcional: deixa o texto alinhado como na imagem */
+}
+#SectionCV{
+    margin: 0;
+  text-align: justify; /* Opcional: deixa o texto alinhado como na imagem */
+}

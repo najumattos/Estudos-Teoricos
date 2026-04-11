@@ -4,7 +4,7 @@ Primeiro eu fiz um [curriculo-com-copliot] depois eu refiz em react pra aula de 
 quanto a centralização de responsabilidades em um único arquivo. <details><summary>Busquei padronizar a nomenclatura em inglês conforme 
 segurido pelo professor.</summary>mas eu me embananei</details>
 
-No componente ProfileAna.jsx, apliquei o *princípio de separação de preocupações:* ele atua como um componente de "container", 
+Na screen ProfileAna.jsx, apliquei o *princípio de separação de preocupações:* ele atua como um componente de "container", 
 mantendo a estrutura lógica mais limpa possível. Ele é responsável apenas por ter os dados do currículo e repassá-los via props para os 
 componentes de interface, que cuidam da estilização e formatação final.
 

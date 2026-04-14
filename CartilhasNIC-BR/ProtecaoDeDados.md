@@ -1,4 +1,4 @@
-# Fascículo: Vazamento de Dados
+# Fascículo: Proteção de Dados
 A proteção de dados pessoais não é apenas uma questão de conformidade legal com a LGPD, mas um compromisso com a privacidade do usuário. No desenvolvimento, isso significa tratar o dado como um ativo de alto risco.
 
 Vazamentos de dados (data leak) ocorrem quando dados são indevidamente acessados, coletados e divulgados na Internet, ou repassados a terceiros. Com a disseminação dos serviços online, seus dados estão cada vez mais expostos e sendo coletados pelos diferentes serviços disponíveis.

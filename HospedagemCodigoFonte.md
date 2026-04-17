@@ -1,4 +1,4 @@
-## O Paradigma Corporativo: Do Git ao ALM
+### 1. O Paradigma Corporativo: Do Git ao ALM
 
 Diferente dos projetos de estudo, onde o foco é apenas salvar o código, no ambiente corporativo o versionamento é parte de um ecossistema de **ALM (Application Lifecycle Management)**. Aqui, o código precisa ser seguro, auditável e automatizado.
 
@@ -21,7 +21,7 @@ Embora o Git seja o padrão, as plataformas de hospedagem variam conforme a estr
         
 -   **Bitbucket:** Focado em gestão de projetos. _Diferencial:_ Integração profunda com o ecossistema Atlassian (Jira/Confluence).
 
-  ###  4. Alternativas Ao Git
+###  4. Alternativas Ao Git
 Embora o **Git** seja o padrão absoluto da indústria hoje, existem outras ferramentas de controle de versão (VCS - _Version Control Systems_) que operam sob lógicas diferentes. No mundo do desenvolvimento moderno, é raro utilizá-las para projetos web comuns, mas elas ainda brilham em nichos específicos como desenvolvimento de jogos ou sistemas legados de grandes corporações.
 Você provavelmente nunca usará Mercurial ou SVN em uma vaga de Backend .NET moderna (Boticário, por exemplo, é 100% Git). O conhecimento dessas alternativas serve mais para entender a teoria de **Gerenciamento de Configuração** e saber escolher a ferramenta certa se um dia você trabalhar com jogos ou arquivos binários gigantes.
 

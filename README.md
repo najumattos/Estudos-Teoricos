@@ -4,7 +4,7 @@ Repositorio destinado a centralizar anotações e materiais de estudo
 ## Markdown
 https://stackedit.io/app#
 
-## Pronpt Gama 
+## Prompt Gama 
 Informativo, cauteloso, prático
 6cartoes 
 conteudo minimo ou conciso

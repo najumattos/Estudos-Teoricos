@@ -13,3 +13,7 @@ db.movies.find(
     { "title": 1, "imdb.votes": 1, "imdb.rating": 1, "_id": 0 })
     .sort({ "imdb.votes": -1 })
     .limit(1)
+
+    //and
+     
+    //or

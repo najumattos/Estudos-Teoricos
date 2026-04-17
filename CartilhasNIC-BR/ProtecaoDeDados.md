@@ -45,3 +45,20 @@ Para quem desenvolve sistemas, essas diretrizes não são apenas dicas de usuár
 * **Uso de DTOs (Data Transfer Objects):** A cartilha de Proteção de Dados fala sobre "coleta não transparente" e "minimizar dados". O DTO serve como um filtro, seu uso garante que, mesmo que a requisição seja interceptada, os dados expostos sao menores do que transitar diretamente com a model;
 * **Manter um código organizado:** Um sistema testável é um sistema mais seguro, pois você consegue prever comportamentos anômalos e garantir que as regras de validação de dados funcionem conforme o esperado;
 * **Logging e Monitoramento:** A cartilha de vazamentos diz que é preciso "monitorar". Em software, isso significa ter logs de erro e de acessos suspeitos (sem logar dados sensíveis do usuário, o que seria uma violação da LGPD).
+
+## Consequências o desenvolvedor/empresa enfrenta
+As repercussões de um vazamento de dados são severas e abrangentes:
+
+* Sanções administrativas e multas: Penalidades aplicadas pela ANPD, que podem chegar a multas pecuniárias elevadas e até o bloqueio ou eliminação do banco de dados.
+* Danos à reputação: Perda de confiança dos clientes, impacto negativo na imagem da marca e fuga de usuários para concorrentes.
+* Responsabilidade civil: Ações judiciais movidas pelos titulares dos dados afetados ou por entidades de defesa do consumidor, gerando custos com indenizações.
+* Custos operacionais: Gastos emergenciais com remediação técnica, auditorias forenses, contratação de consultorias de segurança e campanhas de comunicação.
+* Responsabilidade individual: Em casos de negligência grave ou má conduta comprovada, profissionais podem enfrentar processos internos, demissão por justa causa ou até responsabilidades legais diretas.
+
+## Como dados vazados podem ser usados?
+Os dados vazados são utilizados para diversas atividades ilícitas, incluindo:
+* Fraudes financeiras: Realização de compras não autorizadas, solicitações de empréstimos em nome da vítima ou desvio de fundos.
+* Roubo de identidade: Criação de perfis falsos, abertura de contas ou contratação de serviços utilizando os dados pessoais dos titulares.
+* Engenharia social e phishing: Utilização de informações específicas (nome de familiares, histórico profissional, contatos) para criar golpes mais convincentes e direcionados.
+* Acesso indevido a outros sistemas: Uso de credenciais vazadas em outras plataformas (ataques de credential stuffing), aproveitando-se do hábito de reutilização de senhas.
+* Extorsão e chantagem: Utilização de dados sensíveis, como prontuários médicos ou histórico privado, para chantagear indivíduos ou empresas.

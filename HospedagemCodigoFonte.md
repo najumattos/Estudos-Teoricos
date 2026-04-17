@@ -1,3 +1,7 @@
+## Plataformas de hospedagem de código-fonte voltadas para empresas
+A empresas quase nunca usam plataformas como o GitHub da mesma forma que nós usamos para nossos projetos de estudo. O cenário muda completamente quando envolve segredo industrial e dados de clientes. 
+Muito se fala da importância de versionamento de código, a importância de dominar Git, que muitas vezes é atrelado erroneamente ao Github como se ambos fossem uma coisa só e apesar do Github ser a maior plataforma de hospedagem de código fonte ela não é a única. Nem mesmo o GIT é a única opção para versionamento.
+
 ### 1. O Paradigma Corporativo: Do Git ao ALM
 
 Diferente dos projetos de estudo, onde o foco é apenas salvar o código, no ambiente corporativo o versionamento é parte de um ecossistema de **ALM (Application Lifecycle Management)**. Aqui, o código precisa ser seguro, auditável e automatizado.

@@ -46,12 +46,12 @@ Enquanto a **Arquitetura** define as fronteiras (as paredes da casa), a **Metodo
  ```mermaid
 sequenceDiagram
 
-Usuario->>View: Preenche email e senha
-View->>Controller: POST /login (dados)
-Controller->>Model: validarCredenciais(email, senha)
-Model-->>Controller: valido | invalido
+Usuario->>View: Preenche nome, email e senha
+View->>Controller: POST /cadastro (dados)
+Controller->>Model: cadastrarUsuario(nome, email, senha)
+Model-->>Controller: cadastrado | erro
 Controller-->>View: sucesso | erro
-View-->>Usuario: Exibe dashboard | mensagem de falha
+View-->>Usuario: Exibe tela inicial | mensagem de falha
 
  ```
  
@@ -61,11 +61,37 @@ Popularizada por Robert C. Martin (Uncle Bob), o objetivo aqui é a independênc
 Vantagem: Altamente testável e fácil de trocar tecnologias sem quebrar o sistema.
 
 Conceito chave: Dependências apontam sempre para dentro (para as regras de negócio).
+ ```mermaid
+sequenceDiagram
 
+Usuario->>View: Preenche nome, email e senha
+View->>Controller: POST /cadastro (dados)
+Controller->>UseCase: cadastrarUsuario(nome, email, senha)
+UseCase->>Repository: salvarUsuario(dados)
+Repository-->>UseCase: cadastrado | erro
+UseCase-->>Controller: sucesso | erro
+Controller-->>View: sucesso | erro
+View-->>Usuario: Exibe tela inicial | mensagem de falha
+
+ ```
 ### Hexagonal Architecture
 Muito similar à Clean Architecture. Ela visualiza a aplicação como um núcleo cercado por "portas" (interfaces) onde você conecta "adaptadores" (implementações como banco de dados, serviços de e-mail, etc.).
 
 -   **Vantagem:** Facilita o uso de múltiplos "drivers" (ex: você pode disparar a mesma lógica via terminal ou via requisição HTTP).
+
+ ```mermaid
+sequenceDiagram
+
+Usuario->>Interface: Preenche nome, email e senha
+Interface->>Porta de Entrada: POST /cadastro (dados)
+Porta de Entrada->>Aplicacao: cadastrarUsuario(nome, email, senha)
+Aplicacao->>Adaptador de Saida: salvarUsuario(dados)
+Adaptador de Saida-->>Aplicacao: cadastrado | erro
+Aplicacao-->>Porta de Entrada: sucesso | erro
+Porta de Entrada-->>Interface: sucesso | erro
+Interface-->>Usuario: Exibe tela inicial | mensagem de falha
+
+ ```
 
 ### Microservices
 Em vez de um único projeto gigante (**Monolito**), você divide a aplicação em vários serviços pequenos e independentes que se comunicam via rede (HTTP, gRPC ou filas).
@@ -74,15 +100,53 @@ Em vez de um único projeto gigante (**Monolito**), você divide a aplicação e
     
 -   **Desafio:** Aumenta muito a complexidade de rede, monitoramento e deploys.
 
+ ```mermaid
+sequenceDiagram
+
+Usuario->>API Gateway: Preenche nome, email e senha
+API Gateway->>Serviço de Cadastro: POST /cadastro (dados)
+Serviço de Cadastro->>Serviço de Usuários: cadastrarUsuario(nome, email, senha)
+Serviço de Usuários-->>Serviço de Cadastro: cadastrado | erro
+Serviço de Cadastro-->>API Gateway: sucesso | erro
+API Gateway-->>Usuario: Exibe tela inicial | mensagem de falha
+
+ ```
+
 ### Event-Driven Architecture
 O fluxo do sistema é determinado por eventos (ex: "PedidoCriado", "PagamentoConfirmado"). Os componentes reagem a esses eventos de forma assíncrona.
 
 -   **Vantagem:** Excelente para sistemas que precisam processar muita informação em paralelo e de forma desacoplada.
 
+ ```mermaid
+sequenceDiagram
+
+Usuario->>API: Preenche nome, email e senha
+API->>Publicador de Eventos: POST /cadastro (dados)
+Publicador de Eventos->>Broker: publicar UsuarioCadastrado
+Broker->>Consumidor: entregar evento
+Consumidor->>Servico de Usuarios: salvarUsuario(dados)
+Servico de Usuarios-->>Consumidor: cadastrado | erro
+Consumidor-->>API: sucesso | erro
+API-->>Usuario: Exibe tela inicial | mensagem de falha
+
+ ```
+
 ### Serverless Architecture
 Você foca apenas no código da função (ex: AWS Lambda) e o provedor de nuvem gerencia toda a infraestrutura e escalabilidade automaticamente.
 
 -   **Vantagem:** Você só paga pelo tempo que o código está executando.
+
+ ```mermaid
+sequenceDiagram
+
+Usuario->>API Gateway: Preenche nome, email e senha
+API Gateway->>Function: POST /cadastro (dados)
+Function->>Database: salvarUsuario(dados)
+Database-->>Function: cadastrado | erro
+Function-->>API Gateway: sucesso | erro
+API Gateway-->>Usuario: Exibe tela inicial | mensagem de falha
+
+ ```
 
 ## Metodologia de design
 

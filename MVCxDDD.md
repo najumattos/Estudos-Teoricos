@@ -1,3 +1,4 @@
+
 # MVC X DDD
 Enquanto a **Arquitetura** define as fronteiras (as paredes da casa), a **Metodologia de Design** define como os moradores (as regras de negócio) se comportam e se comunicam.
 
@@ -10,20 +11,28 @@ Enquanto a **Arquitetura** define as fronteiras (as paredes da casa), a **Metodo
 	- [Microservices](#microservices)
 	- [Event-Driven Architecture](#event-driven-architecture)
 	- [Serverless Architecture](#serverless-architecture)
+- [Combinações de Arquiteturas](#combinacoes-de-arquiteturas)
+	- [O "Padrão de Ouro": Microservices + Clean Architecture + DDD](#ouro)
+	- [O Pragmático: MVC + Modular Monolith (DDD)](#pragmatico)
+	- [O Reativo: Event-Driven + Hexagonal Architecture](#reativo)
+ 	- [O Moderno Econômico: Serverless + Clean Architecture](#moderno-economico)
 - [Metodologia de design](#metodologia-de-design)
-	- [DDD](#ddd)
-	- [Data-Driven Design](#data-driven-design)
+	- [DDD(Domain-Driven Design)](#ddd)
+	- [Data-Driven Design (Design Orientado a Dados)](#data-driven-design)
 	- [Transaction Script](#transaction-script)
 	- [Anemic Domain Model](#anemic-domain-model)
 	- [Event Storming / Event Sourcing](#event-storming-event-sourcing)
 
+
 ## Arquiteturas mais relevantes
+A grande sacada da engenharia de software moderna é que essas arquiteturas não são excludentes. Na verdade, elas funcionam como "peças de Lego" que se encaixam em diferentes níveis: Macro (o sistema inteiro) e Micro (dentro de cada serviço).
 
 ### MVC
 É a base de muitos frameworks modernos como ASP.NET Core MVC e Spring Boot.
 * Foco Principal: Separação de Preocupações (Interface vs. Dados).
 * O Problema que resolve: Evita que o código de interface (HTML/CSS) fique misturado com a lógica de acesso ao banco de dados.
 * Uso ideal: Aplicações web tradicionais e CRUDs, onde a facilidade de desenvolvimento e o suporte do framework são prioridades.
+
  ```mermaid
 sequenceDiagram
 
@@ -127,17 +136,122 @@ API Gateway-->>Usuario: Exibe tela inicial | mensagem de falha
 
  ```
 
+## Combinações de Arquiteturas
+
+### O "Padrão de Ouro": Microservices + Clean Architecture + DDD
+Esta é a combinação favorita de grandes empresas (como Netflix e Uber).
+
+-   **Como funciona:** O sistema é dividido em **Microservices** (Macro). Dentro de _cada_ microserviço, você utiliza a **Clean Architecture** para organizar as pastas e o **DDD** para modelar as regras de negócio.
+    
+-   **Vantagem:** Se você precisar trocar o banco de dados de um serviço específico, a Clean Architecture protege o núcleo, enquanto os Microservices garantem que o restante do sistema nem perceba a mudança.
+
+### O Pragmático: MVC + Modular Monolith (DDD)
+Ideal para projetos que precisam de velocidade, mas não querem virar uma bagunça (como pode ser o caso do seu TCC, o **Connectamente**).
+
+-   **Como funciona:** Você usa o **MVC** para a camada de interface (Web). No entanto, o "Model" não é apenas uma classe simples; ele é um módulo organizado por domínios do **DDD**.
+    
+-   **Vantagem:** Menos complexidade de rede que os microsserviços, mas com a organização necessária para crescer de forma estruturada.
+
+### O Reativo: Event-Driven + Hexagonal Architecture](#reativo)
+Muito comum em sistemas financeiros ou de telemetria.
+
+-   **Como funciona:** O sistema reage a eventos (Mensageria). A **Arquitetura Hexagonal** entra para criar "Adaptadores" de eventos. Um adaptador escuta uma fila (RabbitMQ/Kafka) e injeta o dado no núcleo da aplicação.
+    
+-   **Vantagem:** Facilita muito os testes. Você pode simular um evento através de um teste unitário sem precisar de um servidor de mensageria real ligado.
+
+### O Moderno Econômico: Serverless + Clean Architecture
+-   **Como funciona:** Você escreve funções isoladas (Lambda/Azure Functions). Mesmo sendo uma função pequena, você aplica os princípios da **Clean Architecture** para que a lógica de negócio não fique "presa" ao código específico do provedor de nuvem (AWS/Azure).
+    
+-   **Vantagem:** Evita o _vendor lock-in_ (ficar preso a um fornecedor). Se quiser mudar de nuvem, sua regra de negócio está isolada em uma camada pura.
+
 ## Metodologia de design
 
 ### DDD
+-   **Foco Principal:** **Complexidade do Negócio.** O código deve ser um reflexo fiel da linguagem e dos processos dos especialistas do domínio.
+    
+-   **Problema que resolve:** A "lacuna de comunicação" entre desenvolvedores e especialistas de negócio e a dificuldade de manter sistemas com regras muito complexas.
+    
+-   **Uso Ideal:** Sistemas grandes com regras de negócio ricas e complexas, onde o software precisa durar muito tempo e evoluir sem se tornar uma "caixa preta".
 
-### Data-Driven Design
+```mermaid
+graph LR
+    subgraph "Entidade de Domínio (Rica)"
+        A[Pedido] -- "AdicionarItem(produto)" --> B{Validar Estoque}
+        B -- "Sucesso" --> C[Item Adicionado]
+        B -- "Erro" --> D[Lançar Exceção]
+    end
+```
 
+### Data-Driven Design (Design Orientado a Dados)
+-   **Foco Principal:** **Persistência e Estrutura de Dados.** O desenvolvimento começa pelo desenho do banco de dados (tabelas e relacionamentos).
+    
+-   **Problema que resolve:** A complexidade de implementar arquiteturas robustas em cenários onde o objetivo é apenas mover dados de um lugar para outro.
+    
+-   **Uso Ideal:** Aplicações simples, CRUDs (Create, Read, Update, Delete) básicos, ou sistemas onde o desempenho de consultas pesadas ao banco é mais crítico que a lógica de negócio.
+```mermaid
+erDiagram
+    USUARIO ||--o{ PEDIDO : "faz"
+    PEDIDO ||--|{ ITEM : "contém"
+
+    USUARIO {
+        int id
+        string nome
+        string email
+    }
+    PEDIDO {
+        int id
+        datetime data
+    }
+    ITEM {
+        int id
+        string produto
+        float preco
+    }
+```
 ### Transaction Script
-
+-   **Foco Principal:** **Fluxo de Procedimentos.** Organiza a lógica de negócio em torno de transações ou procedimentos únicos que executam uma tarefa do início ao fim.
+    
+-   **Problema que resolve:** A sobrecarga de criar uma estrutura de objetos complexa para tarefas que são simples sequências de passos.
+    
+-   **Uso Ideal:** Lógicas de negócio muito simples, scripts de automação ou sistemas pequenos onde a orientação a objetos sofisticada traria mais custo do que benefício.
+```mermaid
+graph LR
+    A[Início da Transação] --> B[Validar Dados da Requisição]
+    B --> C[Abrir Conexão com Banco]
+    C --> D[Inserir Registro na Tabela X]
+    D --> E[Enviar E-mail de Confirmação]
+    E --> F[Commit e Fechar Conexão]
+```
 ### Anemic Domain Model
-
-<a id="event-storming-event-sourcing"></a>
-
+-   **Foco Principal:** **Objetos de Dados Puros.** As classes de domínio possuem apenas propriedades (`getters` e `setters`) e nenhuma lógica interna.
+    
+-   **Problema que resolve:** Facilita o uso de ferramentas de mapeamento objeto-relacional (ORM) e a serialização de dados, embora seja frequentemente considerado um "anti-padrão" no contexto de DDD.
+    
+-   **Uso Ideal:** Projetos onde a lógica de negócio é externa aos objetos (está em _Services_) ou em sistemas onde a simplicidade extrema dos objetos facilita a integração com frameworks.
+```mermaid
+graph LR
+    subgraph "Service"
+        S[PedidoService]
+    end
+    subgraph "Anemic Model"
+        M[PedidoDTO/Entity]
+    end
+    S -- "Lê dados de" --> M
+    S -- "Calcula Total e Altera" --> M
+```
 ### Event Storming / Event Sourcing
-
+-   **Foco Principal:** **Histórico de Mudanças (Eventos).** O estado atual do sistema não é apenas um valor no banco, mas a soma de todos os eventos que aconteceram no passado.
+    
+-   **Problema que resolve:** A perda de contexto histórico. Em bancos tradicionais, você sabe o saldo atual, mas no Event Sourcing você sabe exatamente _como_ chegou a esse saldo, facilitando auditorias e reversões.
+    
+-   **Uso Ideal:** Sistemas financeiros, logística, rastreamento de pedidos e cenários onde a auditoria e a análise histórica de eventos são fundamentais.
+```mermaid
+graph LR
+    E1((ContaCriada)) --> E2((DepositoRealizado))
+    E2 --> E3((SaqueRealizado))
+    E3 --> E4((EnderecoAlterado))
+    
+    subgraph "Estado Atual (Projeção)"
+        E4 -.-> S[Saldo: R$ 100,00]
+    end
+```

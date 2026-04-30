@@ -1,6 +1,8 @@
 
 # MVC X DDD
 Enquanto a **Arquitetura** define as fronteiras (as paredes da casa), a **Metodologia de Design** define como os moradores (as regras de negócio) se comportam e se comunicam.
+As combinações entre arquiteturas e metodologias de design permitem que você escolha a melhor ferramenta para cada nível do seu projeto, desde a organização das pastas até a forma como os serviços se comunicam.
+A grande sacada da engenharia de software moderna é que essas arquiteturas não são excludentes. Na verdade, elas funcionam como "peças de Lego" que se encaixam em diferentes níveis: Macro (o sistema inteiro) e Micro (dentro de cada serviço).
 
 ## Sumário
 
@@ -11,21 +13,20 @@ Enquanto a **Arquitetura** define as fronteiras (as paredes da casa), a **Metodo
 	- [Microservices](#microservices)
 	- [Event-Driven Architecture](#event-driven-architecture)
 	- [Serverless Architecture](#serverless-architecture)
-- [Combinações de Arquiteturas](#combinacoes-de-arquiteturas)
-	- [O "Padrão de Ouro": Microservices + Clean Architecture + DDD](#ouro)
-	- [O Pragmático: MVC + Modular Monolith (DDD)](#pragmatico)
-	- [O Reativo: Event-Driven + Hexagonal Architecture](#reativo)
- 	- [O Moderno Econômico: Serverless + Clean Architecture](#moderno-economico)
 - [Metodologia de design](#metodologia-de-design)
 	- [DDD(Domain-Driven Design)](#ddd)
 	- [Data-Driven Design (Design Orientado a Dados)](#data-driven-design)
 	- [Transaction Script](#transaction-script)
 	- [Anemic Domain Model](#anemic-domain-model)
 	- [Event Storming / Event Sourcing](#event-storming-event-sourcing)
+- [Combinações Estratégicas](#combinacoes-estrategicas)
+	- [O "Padrão de Ouro": Microservices + Clean Architecture + DDD](#ouro)
+	- [O Pragmático: MVC + Modular Monolith (DDD)](#pragmatico)
+	- [O Reativo: Event-Driven + Hexagonal Architecture](#reativo)
+ 	- [O Moderno Econômico: Serverless + Clean Architecture](#moderno-economico)
 
 
 ## Arquiteturas mais relevantes
-A grande sacada da engenharia de software moderna é que essas arquiteturas não são excludentes. Na verdade, elas funcionam como "peças de Lego" que se encaixam em diferentes níveis: Macro (o sistema inteiro) e Micro (dentro de cada serviço).
 
 ### MVC
 É a base de muitos frameworks modernos como ASP.NET Core MVC e Spring Boot.
@@ -135,35 +136,6 @@ Function-->>API Gateway: sucesso | erro
 API Gateway-->>Usuario: Exibe tela inicial | mensagem de falha
 
  ```
-
-## Combinações de Arquiteturas
-
-### O "Padrão de Ouro": Microservices + Clean Architecture + DDD
-Esta é a combinação favorita de grandes empresas (como Netflix e Uber).
-
--   **Como funciona:** O sistema é dividido em **Microservices** (Macro). Dentro de _cada_ microserviço, você utiliza a **Clean Architecture** para organizar as pastas e o **DDD** para modelar as regras de negócio.
-    
--   **Vantagem:** Se você precisar trocar o banco de dados de um serviço específico, a Clean Architecture protege o núcleo, enquanto os Microservices garantem que o restante do sistema nem perceba a mudança.
-
-### O Pragmático: MVC + Modular Monolith (DDD)
-Ideal para projetos que precisam de velocidade, mas não querem virar uma bagunça (como pode ser o caso do seu TCC, o **Connectamente**).
-
--   **Como funciona:** Você usa o **MVC** para a camada de interface (Web). No entanto, o "Model" não é apenas uma classe simples; ele é um módulo organizado por domínios do **DDD**.
-    
--   **Vantagem:** Menos complexidade de rede que os microsserviços, mas com a organização necessária para crescer de forma estruturada.
-
-### O Reativo: Event-Driven + Hexagonal Architecture](#reativo)
-Muito comum em sistemas financeiros ou de telemetria.
-
--   **Como funciona:** O sistema reage a eventos (Mensageria). A **Arquitetura Hexagonal** entra para criar "Adaptadores" de eventos. Um adaptador escuta uma fila (RabbitMQ/Kafka) e injeta o dado no núcleo da aplicação.
-    
--   **Vantagem:** Facilita muito os testes. Você pode simular um evento através de um teste unitário sem precisar de um servidor de mensageria real ligado.
-
-### O Moderno Econômico: Serverless + Clean Architecture
--   **Como funciona:** Você escreve funções isoladas (Lambda/Azure Functions). Mesmo sendo uma função pequena, você aplica os princípios da **Clean Architecture** para que a lógica de negócio não fique "presa" ao código específico do provedor de nuvem (AWS/Azure).
-    
--   **Vantagem:** Evita o _vendor lock-in_ (ficar preso a um fornecedor). Se quiser mudar de nuvem, sua regra de negócio está isolada em uma camada pura.
-
 ## Metodologia de design
 
 ### DDD
@@ -253,5 +225,85 @@ graph LR
     
     subgraph "Estado Atual (Projeção)"
         E4 -.-> S[Saldo: R$ 100,00]
+    end
+```
+
+## Combinações Estratégicas
+
+### O "Padrão de Ouro": Microservices + Clean Architecture + DDD
+Esta é a combinação favorita de grandes empresas (como Netflix e Uber).
+
+-   **Como funciona:** O sistema é dividido em **Microservices** (Macro). Dentro de _cada_ microserviço, você utiliza a **Clean Architecture** para organizar as pastas e o **DDD** para modelar as regras de negócio.
+    
+-   **Vantagem:** Se você precisar trocar o banco de dados de um serviço específico, a Clean Architecture protege o núcleo, enquanto os Microservices garantem que o restante do sistema nem perceba a mudança.
+```mermaid
+graph TD
+    subgraph "Microserviço A (ex: Pagamentos)"
+        subgraph "Clean Architecture"
+            D1((Domínio/DDD)) --- A1[Aplicação/Casos de Uso]
+            A1 --- I1[Infraestrutura/DB]
+        end
+    end
+    
+    subgraph "Microserviço B (ex: Usuários)"
+        subgraph "Clean Architecture "
+            D2((Domínio/DDD)) --- A2[Aplicação/Casos de Uso]
+            A2 --- I2[Infraestrutura/DB]
+        end
+    end
+
+    U[Usuário] --> A1
+    A1 <--> A2
+```
+### O Pragmático: MVC + Modular Monolith (DDD)
+Ideal para projetos que precisam de velocidade, mas não querem virar uma bagunça (como pode ser o caso do seu TCC, o **Connectamente**).
+
+-   **Como funciona:** Você usa o **MVC** para a camada de interface (Web). No entanto, o "Model" não é apenas uma classe simples; ele é um módulo organizado por domínios do **DDD**.
+    
+-   **Vantagem:** Menos complexidade de rede que os microsserviços, mas com a organização necessária para crescer de forma estruturada.
+```mermaid
+graph LR
+    subgraph "Interface (MVC)"
+        C{Controller} --- V[View]
+    end
+
+    subgraph "Módulos de Domínio (DDD)"
+        C --> M1[Módulo Prontuários]
+        C --> M2[Módulo Agendamento]
+    end
+
+    M1 --- DB[(Banco Único)]
+    M2 --- DB
+```
+### O Reativo: Event-Driven + Hexagonal Architecture](#reativo)
+Muito comum em sistemas financeiros ou de telemetria.
+
+-   **Como funciona:** O sistema reage a eventos (Mensageria). A **Arquitetura Hexagonal** entra para criar "Adaptadores" de eventos. Um adaptador escuta uma fila (RabbitMQ/Kafka) e injeta o dado no núcleo da aplicação.
+    
+-   **Vantagem:** Facilita muito os testes. Você pode simular um evento através de um teste unitário sem precisar de um servidor de mensageria real ligado.
+```mermaid
+graph LR
+    E[Fila de Eventos/Kafka] -- "Evento" --> P[Porta de Entrada]
+    
+    subgraph "Núcleo (Hexagonal)"
+        P --> A[Adaptador de Evento]
+        A --> N((Coração da Aplicação))
+    end
+    
+    N --> DB[(Persistência)]
+```
+### O Moderno Econômico: Serverless + Clean Architecture
+-   **Como funciona:** Você escreve funções isoladas (Lambda/Azure Functions). Mesmo sendo uma função pequena, você aplica os princípios da **Clean Architecture** para que a lógica de negócio não fique "presa" ao código específico do provedor de nuvem (AWS/Azure).
+    
+-   **Vantagem:** Evita o _vendor lock-in_ (ficar preso a um fornecedor). Se quiser mudar de nuvem, sua regra de negócio está isolada em uma camada pura.
+```mermaid
+graph TD
+    subgraph "Nuvem (AWS/Azure)"
+        F[Trigger/Gatilho da Função] --> L[Camada de Entrada]
+        
+        subgraph "Código da Função (Clean Arch)"
+            L --> UC[Caso de Uso/Regra de Negócio]
+            UC --> D((Domínio Puro))
+        end
     end
 ```

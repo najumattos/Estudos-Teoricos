@@ -230,6 +230,8 @@ graph LR
 
 ## Combinações Estratégicas
 
+<a id="ouro"></a>
+
 ### O "Padrão de Ouro": Microservices + Clean Architecture + DDD
 Esta é a combinação favorita de grandes empresas (como Netflix e Uber).
 
@@ -255,6 +257,8 @@ graph TD
     U[Usuário] --> A1
     A1 <--> A2
 ```
+<a id="pragmatico"></a>
+
 ### O Pragmático: MVC + Modular Monolith (DDD)
 Ideal para projetos que precisam de velocidade, mas não querem virar uma bagunça (como pode ser o caso do seu TCC, o **Connectamente**).
 
@@ -275,7 +279,9 @@ graph LR
     M1 --- DB[(Banco Único)]
     M2 --- DB
 ```
-### O Reativo: Event-Driven + Hexagonal Architecture](#reativo)
+<a id="reativo"></a>
+
+### O Reativo: Event-Driven + Hexagonal Architecture
 Muito comum em sistemas financeiros ou de telemetria.
 
 -   **Como funciona:** O sistema reage a eventos (Mensageria). A **Arquitetura Hexagonal** entra para criar "Adaptadores" de eventos. Um adaptador escuta uma fila (RabbitMQ/Kafka) e injeta o dado no núcleo da aplicação.
@@ -292,6 +298,8 @@ graph LR
     
     N --> DB[(Persistência)]
 ```
+<a id="moderno-economico"></a>
+
 ### O Moderno Econômico: Serverless + Clean Architecture
 -   **Como funciona:** Você escreve funções isoladas (Lambda/Azure Functions). Mesmo sendo uma função pequena, você aplica os princípios da **Clean Architecture** para que a lógica de negócio não fique "presa" ao código específico do provedor de nuvem (AWS/Azure).
     

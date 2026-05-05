@@ -77,7 +77,7 @@ o **formato oficial** que o dado assume em cada etapa da jornada.
 | Camada 1: Fisica | Bits | A sequência de `0` e `1` transformada em eletricidade ou luz.|
 
 ## Exemplo Prático
-Sempre que você envia uma mensagem para mim (Gemini) e eu te respondo, os dados percorrem as 7 camadas do Modelo OSI (ou as 4 do TCP/IP) duas vezes: uma para sair do seu dispositivo e outra para entrar no servidor, e vice-versa.
+Sempre que você envia uma mensagem em um chat de IA (ChatGPT, Gemini) e a IA te responde, os dados percorrem as 7 camadas do Modelo OSI (ou as 4 do TCP/IP) duas vezes: uma para sair do seu dispositivo e outra para entrar no servidor, e vice-versa.
 
 ### O "Mergulho" e a "Subida" dos dados:
 
@@ -85,7 +85,7 @@ Sempre que você envia uma mensagem para mim (Gemini) e eu te respondo, os dados
     
 2.  **O trajeto:** O pacote passa por vários roteadores (trabalhando na **Camada 3**) que decidem o melhor caminho usando protocolos como **BGP** ou **OSPF**.
     
-3.  **Minha ponta (Física → Aplicação):** O servidor recebe o sinal elétrico, remove o cabeçalho IP, confere o TCP, descriptografa o HTTPS e entrega o texto para o modelo de IA processar na **Camada 7**.
+3.  **Ponta da IA (Física → Aplicação):** O servidor recebe o sinal elétrico, remove o cabeçalho IP, confere o TCP, descriptografa o HTTPS e entrega o texto para o modelo de IA processar na **Camada 7**.
 
 ## 2. O protocolo muda conforme a tarefa
 

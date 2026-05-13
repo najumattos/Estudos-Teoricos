@@ -41,8 +41,8 @@ Embora nem todos os pacotes IP usem um rodapé (muitos confiam no Checksum do ca
 
 ## As 7 Camadas do Modelo OSI
 A comunicação começa na camada 7 (no seu aplicativo) e desce até a camada 1 (os cabos), viaja pela rede e faz o caminho inverso no destino.
-Na prática do dia a dia e no mercado de trabalho, você ouvirá muito sobre o **Modelo TCP/IP**. Ele é a versão "simplificada" que a internet realmente usa, condensando as 7 camadas do OSI em apenas 4: **Aplicação**, **Transporte**, **Internet** (Rede) e **Acesso à Rede**.
-Para o seu estudo da "Jornada do Pacote", o Modelo OSI é melhor porque ele detalha exatamente onde cada protocolo (como o ARP ou o DNS) atua, o que te dá uma visão muito mais granular do processo.
+Na prática do dia a dia e no mercado de trabalho, o **Modelo TCP/IP** é o padrão pois ele agrupa as funções que, na prática, acontecem juntas. Ele é a versão "simplificada" que a internet realmente usa, condensando as 7 camadas do OSI em apenas 4: **Aplicação**, **Transporte**, **Internet** (Rede) e **Acesso à Rede**.
+Para fins de estudo o Modelo OSI é melhor porque ele detalha exatamente onde cada protocolo atua.
 
 ### Por que o Modelo OSI é importante?
 

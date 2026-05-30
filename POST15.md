@@ -5,56 +5,81 @@
 Na prática, é uma metodologia apoiada por automação que transforma o ciclo de desenvolvimento de software, garantindo que o código saia da máquina do desenvolvedor e chegue até o ambiente de produção de forma rápida, segura e padronizada.
 
 Imagine o CI/CD como uma esteira de produção automatizada: o código entra em uma ponta, passa por testes, validações e empacotamento, e sai na outra ponta pronto para o usuário final, sem depender de processos manuais lentos e propensos a falhas humanas.
+> Os conceitos explicados a seguir foram implementados e validados em um projeto real desenvolvido em **.NET** [[Link do Projeto](https://www.google.com/search?q=projeto-link)].
 
-## Entendendo os Pilares
+## 1. CI — Continuous Integration (Integração Contínua)
 
-### 1. CI — Continuous Integration (Integração Contínua)
+O foco central do CI é a **frequência de integração** e a **validação automatizada**. Em vez de os desenvolvedores trabalharem isolados por semanas, o que resulta em conflitos de merges (_Merge Hell_), as alterações são integradas ao repositório central múltiplas vezes ao dia.
 
-O foco do CI é a **frequência** e a **validação**. Em vez de os desenvolvedores trabalharem isolados por semanas e enfrentarem o famoso _"infretável"_ conflito de merge (o "merge hell") no final do mês, eles integram suas alterações no repositório central (como o GitHub ou GitLab) várias vezes ao dia.
+Esse processo remove o fator humano da validação. Sempre que um desenvolvedor realiza um `git push` ou abre um `Pull Request`, uma esteira de automação (servidor de CI) é acionada e executa rigorosamente as seguintes etapas:
 
-Cada vez que um código é enviado, a esteira automatizada entra em ação:
+-   **1. Provisionamento e Checkout:** A esteira aloca uma máquina virtual limpa e executa o _Checkout_ (baixa o código do seu repositório para dentro dessa máquina).    
+-   **2. Configuração do Ambiente:** Instala o **.NET SDK** na versão exata especificada no projeto. Sem isso, a máquina não possui os compiladores e ferramentas necessárias.    
+-   **3. Restore (Restauração):** O comando `dotnet restore` é executado. O ambiente baixa todos os pacotes e dependências externas (como os pacotes NuGet) necessários para o projeto rodar.    
+-   **4. Build (Compilação):** O sistema compila o código-fonte (`dotnet build`). Essa etapa garante de forma automatizada que não existem erros de sintaxe, referências perdidas ou quebras de contrato no código.    
+-   **5. Execução dos Testes Unitários:** O motor de testes roda a suíte de testes unitários. É a validação rápida de algoritmos, regras de negócio e lógica isolada de métodos.    
+-   **6. Execução dos Testes de Integração:** Roda a suíte de testes de integração, validando o comportamento de ponta a ponta, comunicação com banco de dados, requisições HTTP e controllers da API.
+        
+`foto do github https://github.com/najumattos/vitrine-semi-joias/actions/runs/26670856452/job/78613656736`
 
--   **Build:** O sistema compila o código para garantir que não há erros de sintaxe ou dependências quebradas.
+`exemplo ERRO`
+`exemplo Sucesso`
+
+> ⚠️ **Regra de Ouro do CI:** A esteira funciona como um portão de qualidade. Se qualquer teste falhar ou a compilação quebrar, o processo é abortado imediatamente, o código é bloqueado e a equipe é alertada. O código defeituoso jamais avança para as próximas etapas (CD).
+
+### 1. Testes Unitários (Unit Tests)
+O foco do teste unitário é testar a **menor unidade isolada de código** possível. Geralmente, essa unidade é um método ou uma função específica de uma classe.
+A regra principal aqui é o **isolamento absoluto**: o teste unitário não pode conversar com o banco de dados, não pode fazer chamadas de rede (APIs externas) e não pode depender do sistema de arquivos. Qualquer dependência externa é substituída por um objeto simulado (chamado de **Mock** ou **Stub**).
+-   **Analogia do carro:** É você tirar uma vela de ignição do motor, colocá-la em uma bancada de testes isolada e verificar se ela solta faísca quando recebe corrente elétrica. Você não quer saber se o motor liga; quer saber se _aquela peça específica_ funciona sozinha.
+
+ `exemplo ProductServiceTest`         
+ 
+**Vantagens:**
+-   **Velocidade:** Como rodam totalmente em memória e sem comunicação externa, milhares de testes unitários podem ser executados em pouquíssimos segundos.    
+-   **Precisão do erro:** Se o teste falhar, você sabe exatamente qual linha de código e qual regra de negócio quebrou.
+
+
+### 2. Testes de Integração (Integration Tests)
+
+O foco do teste de integração é validar se **duas ou mais unidades/componentes funcionam bem juntos**. Ele preenche a lacuna que o teste unitário deixa ao isolar tudo.
+Aqui, os pontos de atrito são testados: a comunicação entre o código e o banco de dados real, a integração com uma API de pagamento, ou se duas classes de regras de negócio distintas conversam corretamente sem corromper os dados.
+-   **Analogia do carro:** É o momento de montar a vela no motor, conectar o tanque de combustível, girar a chave e ver se o motor dá a partida. As peças individuais podem estar perfeitas, mas se o cabo de combustível estiver entupido (falha na integração), o motor não vai funcionar.
     
--   **Testes Automatizados:** São executados testes unitários e de integração para validar se a nova funcionalidade não quebrou nenhuma regra de negócio existente.
-    
+ `exemplo AuthServiceTest`    
 
-> **Regra de Ouro do CI:** Se um teste falhar, o build quebra e a equipe é avisada imediatamente. O código defeituoso não avança.
+**Vantagens:**
 
-### 2. CD — Continuous Delivery vs. Continuous Deployment
+-   **Confiança Real:** Ele garante que as partes do sistema realmente se conectam e que as queries do banco de dados estão corretas.    
+-   **Pega falhas ocultas:** Descobre erros de configuração, problemas de permissão de acesso a dados ou incompatibilidade de contratos entre sistemas.
 
-Aqui o termo se divide em duas abordagens, dependendo do nível de automação que a empresa adota após o código passar pelo processo de CI.
 
--   **Continuous Delivery (Entrega Contínua):** O código passa por todas as etapas de testes e é empacotamento de forma automática, gerando um artefato pronto para ir para produção. No entanto, **a decisão final de colocar o código no ar é manual** (um clique de um botão pelo gerente de release ou equipe de operações).
-    
--   **Continuous Deployment (Implantação Contínua):** É o próximo nível de automação. Não há intervenção humana. Se o código passou em todos os testes do CI e nas validações de staging (ambiente de homologação), ele é **implantado automaticamente em produção** diretamente para os clientes.
-## Vantagens no Mundo Real
+## Comparativo
+| Caracteristica | Testes Unitários | Testes de Integração |
+|--|--|--|
+| Escopo | Uma única função, método ou classe | Fluxo entre múltiplos componentes/sistemas
+| Velocidade | Extremamente rápidos (milissegundos) | Mais lentos (dependem de I/O, rede, banco) |
+| Dependências | Nenhuma (usa Mocks/Simulações) | Reais (Banco de dados, arquivos, APIs)|
 
--   **Feedbacks Rápidos:** Se você cometer um erro de lógica, a esteira te avisa em minutos, e não semanas depois através de uma reclamação de bug do cliente.
-    
--   **Releases Menores e Menos Arriscadas:** Publicar pequenas alterações diariamente é infinitamente mais seguro do que acumular 50 novas funcionalidades para atualizar o sistema de uma só vez.
-    
--   **Automação de Tarefas Repetitivas:** O desenvolvedor foca em programar, enquanto a esteira cuida do trabalho burocrático de rodar testes, buildar, gerar imagens Docker e atualizar servidores.
-
-## Como criar um projeto de testes?
-```mermaid
+## Como criar um projeto de testes em c#?
+```mermaid 
 graph TD
-    P1[Passo 1: Criar o Projeto de Testes xUnit/NUnit] --> P2[Passo 2: Vincular o Projeto à Solução]
+P1[Passo 1: Criar o Projeto de Testes xUnit/NUnit] --> P2[Passo 2: Vincular o Projeto à Solução]
     
     P2 --> FU[Fluxo Unitário]
     P2 --> FI[Fluxo de Integração]
-    
-    subgraph Unitario [ ]
-        FU --> U3["[3] Ref. Camada Específica"]
-        U3 --> U4["[4] Instalar Moq/NSubstitute"]
-        U4 --> U5["[5] AAA (Foco no Método)"]
-    end
-    
     subgraph Integracao [ ]
         FI --> I3["[3] Ref. Projeto WebAPI + Mvc.Testing"]
         I3 --> I4["[4] Instalar Testcontainers / Ferramentas de DB"]
         I4 --> I5["[5] AAA (Foco no HTTP Request / Estado do DB)"]
     end
+    subgraph Unitario [ ]
+        FU --> U3["[3] Ref. Camada Específica"]
+        U3 --> U4["[4] Instalar Moq/NSubstitute"]
+        U4 --> U5["[5] AAA (Foco no Método)"]
+    end
+				U5 --> P3["[6] Rodar Teste"]
+				I5 --> P3
+    
 
     %% Estilização para manter o visual limpo e profissional
     style Unitario fill:none,stroke:none;
@@ -63,94 +88,42 @@ graph TD
 
 `adicionar uma foto da estrutura de pastas do meu projeto`
 
-## 1. Testes Unitários (Unit Tests)
+### Fluxo de Testes Unitários
+* **Passo 1:** `dotnet new xunit -o tests/MeuProjeto.Tests.Unit`
+* **Passo 2:** `dotnet sln MeuProjeto.sln add tests/MeuProjeto.Tests.Unit/MeuProjeto.Tests.Unit.csproj`
 
-O foco do teste unitário é testar a **menor unidade isolada de código** possível. Geralmente, essa unidade é um método ou uma função específica de uma classe.
+* **Passo 3:** ` dotnet add tests/MeuProjeto.Tests.Unit/MeuProjeto.Tests.Unit.csproj reference src/MeuProjeto.API/MeuProjeto.API.csproj` 
 
-A regra principal aqui é o **isolamento absoluto**: o teste unitário não pode conversar com o banco de dados, não pode fazer chamadas de rede (APIs externas) e não pode depender do sistema de arquivos. Qualquer dependência externa é substituída por um objeto simulado (chamado de **Mock** ou **Stub**).
-
--   **Analogia do carro:** É você tirar uma vela de ignição do motor, colocá-la em uma bancada de testes isolada e verificar se ela solta faísca quando recebe corrente elétrica. Você não quer saber se o motor liga; quer saber se _aquela peça específica_ funciona sozinha.
-    
--   **No código (Exemplo prático):** Se você tem uma classe de cálculo de desconto, o teste unitário vai passar um valor $X$ e verificar se o retorno é exatamente o esperado, testando cenários como valores negativos, zero ou descontos acima do limite.
-    
-
-### Vantagens:
-
--   **Velocidade:** Como rodam totalmente em memória e sem comunicação externa, milhares de testes unitários são executados em pouquíssimos segundos.
-    
--   **Precisão do erro:** Se o teste falhar, você sabe exatamente qual linha de código e qual regra de negócio quebrou.
-
-### Como Implementar?
-* Passo 1: Organizar as Pastas e Criar o Projeto de Testes
-* Passo 2: Vincular o Projeto de Testes à Solução
-* Passo 3: Referenciar a sua API / Código Principal
-* Passo 4: Instalar as Ferramentas de Mock
+* **Passo 4:** 
+	```bash
+	cd tests/MeuProjeto.Tests.Unit
+	dotnet add package NSubstitute
+	```
+	
 * **Passo 5: Escrever o Primeiro Teste (Padrão AAA):** Crie uma classe de teste. Toda estrutura de teste unitário deve seguir o padrão **AAA (Arrange, Act, Assert)**:
--   **Arrange (Organizar):** Prepara o cenário, cria instâncias e simula os mocks.    
--   **Act (Agir):** Executa o método específico que você quer testar.    
--   **Assert (Verificar):** Garante que o resultado obtido é igual ao resultado esperado.
-```csharp
-//exemplo vitrine
-```
-* Passo 6: Executar os Testes
+	-   **Arrange (Organizar):** Prepara o cenário, cria instâncias e simula os mocks.    
+	-   **Act (Agir):** Executa o método específico que você quer testar.    
+	-   **Assert (Verificar):** Garante que o resultado obtido é igual ao resultado esperado.
+`add exemplo da vitrine`
+* **Passo 6**: `dotnet test` 
 
-## 2. Testes de Integração (Integration Tests)
+### Fluxo de Testes de Integração
+* **Passo 1:** `dotnet new xunit -o Tests/MeuProjeto.IntegrationTests`
+* **Passo 2:** `dotnet sln MeuProjeto.sln add Tests/MeuProjeto.IntegrationTests/MeuProjeto.IntegrationTests.csproj`
 
-O foco do teste de integração é validar se **duas ou mais unidades/componentes funcionam bem juntos**. Ele preenche a lacuna que o teste unitário deixa ao isolar tudo.
+* **Passo 3:** `dotnet add Tests/VitrineSemiJoias.IntegrationTests/MeuProjeto.IntegrationTests.csproj reference MeuProjeto/MeuProjeto.csproj` 
 
-Aqui, nós queremos testar os pontos de atrito: a comunicação entre o seu código e o banco de dados real, a integração com uma API de pagamento, ou se duas classes de regras de negócio distintas conversam corretamente sem corromper os dados.
+* **Passo 4:** 
+	```bash
+	cd tests/MeuProjeto.Tests.Unit
+	dotnet add package Microsoft.AspNetCore.Mvc.Testing
+	dotnet add package Microsoft.EntityFrameworkCore.InMemory
+	```
+	
+* **Passo 5:** 
+`add exemplo da vitrine`
+* **Passo 6**: `dotnet test` 
 
--   **Analogia do carro:** É o momento de montar a vela no motor, conectar o tanque de combustível, girar a chave e ver se o motor dá a partida. As peças individuais podem estar perfeitas, mas se o cabo de combustível estiver entupido (falha na integração), o motor não vai funcionar.
-    
--   **No código (Exemplo prático):** Um teste que faz uma requisição HTTP real para um endpoint da sua API, que por sua vez dispara um comando para salvar um registro em um banco de dados de testes (geralmente em memória ou local) e retorna o status `201 Created`.
-    
 
-### Vantagens:
 
--   **Confiança Real:** Ele garante que as partes do sistema realmente se conectam e que as queries do banco de dados estão corretas.
-    
--   **Pega falhas ocultas:** Descobre erros de configuração, problemas de permissão de acesso a dados ou incompatibilidade de contratos entre sistemas.
-### Como Implementar?
-dafsdfsdfsdf
 
-## Github actions
-* Passo 1: Criar as pastas da esteira
-* Passo 2: Criar o arquivo de configuração (YAML)
-* Passo 3: Configurar o YAML
-```csharp
-codigo vitrine
-```
-* Passo 4: Enviar para o GitHub
-* Passo 5: Ver a mágica acontecer
-  1.  Abra o seu repositório no site do **GitHub**.
-  2.  Clique na aba **"Actions"** (fica no menu superior, ao lado de Pull Requests).
-  3.  Você verá o seu commit listado lá com uma bolinha amarela piscando (significa que a máquina da nuvem está rodando os seus testes).
-  4.  Se tudo passar, a bolinha vira um **check verde** 🟢. Se algum teste falhar, vira um **X vermelho** 🔴, e você pode clicar nele para ver exatamente qual teste quebrou.
-`adicionar imagem do github da vitrine`
-
-```mermaid
-graph TD
-    Cod[Código] --> GP[Git Push]
-    GP --> C1[1. Compilar o Código]
-
-    subgraph CI [ESTEIRA DE CI]
-        C1 --> C2[2. TESTES UNITÁRIOS]
-        C2 --> C3[3. TESTES DE INTEGRAÇÃO]
-        C3 --> C4[4. Análise de Código]
-    end
-
-    C4 -- Se tudo passar --> D1[1. Gerar Artefato/Docker]
-
-    subgraph CD [ESTEIRA DE CD]
-        D1 --> D2[2. Deploy em Homologação]
-        D2 --> D3[3. Deploy em Produção]
-    end
-
-    %% Notas explicativas alinhadas
-    N1[Rápido feedback de lógica] -.-> C2
-    N2[Valida infra/banco/APIs] -.-> C3
-
-    %% Estilização
-    style N1 fill:none,stroke:none,text-align:left;
-    style N2 fill:none,stroke:none,text-align:left;
-```
